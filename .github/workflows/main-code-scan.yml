@@ -1,0 +1,35 @@
+name: Main Code Scan
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'main.tf'
+      - 'variables.tf'
+      - 'outputs.tf'
+      - 'modules/**.tf'
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  scan-main-code:
+    name: Scan Production Code Only
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Scan main infrastructure code
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'config'
+          scan-ref: '.'  # Scan the entire repository
+          format: 'table'
+          severity: 'CRITICAL,HIGH'
+          exit-code: '1' # Fail the job if vulnerabilities are found
+          skip-dirs: 'tests' # Skip scanning test directories
+
+      - name: Production code is secure
+        if: success()
+        run: echo "No critical or high severity issues found in main infrastructure code."
