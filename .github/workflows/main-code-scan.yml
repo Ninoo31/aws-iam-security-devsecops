@@ -10,6 +10,9 @@ on:
       - 'modules/**.tf'
   pull_request:
     branches: [ main ]
+  workflow_dispatch:
+  schedule:
+    - cron: '0 3 * * *'  # Daily at 3 AM UTC
 
 jobs:
   scan-main-code:
