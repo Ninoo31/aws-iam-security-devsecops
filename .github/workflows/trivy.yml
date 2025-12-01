@@ -1,0 +1,46 @@
+name: Trivy Security Scan
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  schedule:
+    - cron: '0 2 * * *'  # Daily at 2 AM UTC'
+
+jobs:
+  trivy-iac-scan:
+    name: Trivy IaC Scan Security Scan
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      security-events: write # To upload scan results to GitHub Security
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run Trivy IaC Scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'config'
+          scan-ref: '.'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+          severity: 'CRITICAL,HIGH,MEDIUM'
+          exit-code: '1' # Fail the job if vulnerabilities are found
+
+      - name: Upload Trivy SARIF results to GitHub Security
+        uses: github/codeql-action/upload-sarif@v3
+        if: always() # Ensure this step runs even if the scan fails
+        with:
+          sarif_file: 'trivy-results.sarif'
+
+      - name: Run Trivy Vulnerability Scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'config'
+          scan-ref: '.'  # Scan the entire repository
+          format: 'table'
+          severity: 'CRITICAL,HIGH,MEDIUM'
