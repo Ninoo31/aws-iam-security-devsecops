@@ -26,11 +26,11 @@ module "vpc" {
 }
 
 module "ec2" {
-  source                = "./modules/ec2"
-  bucket_name           = var.bucket_name
-  subnet_id             = module.vpc.public_subnet_id
-  security_group_id     = module.vpc.security_group_id
-  instance_profile_name = module.iam.instance_profile_name
+  source                           = "./modules/ec2"
+  bucket_name                      = var.bucket_name
+  subnet_id                        = module.vpc.public_subnet_id
+  security_group_id                = module.vpc.security_group_id
+  instance_profile_name            = module.iam.instance_profile_name
   instance_profile_write_only_name = module.iam.instance_profile_write_only_name
 }
 

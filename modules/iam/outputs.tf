@@ -11,5 +11,5 @@ output "role_arn" {
 output "instance_profile_write_only_name" {
   description = "The name of the IAM instance profile with write only access"
   value       = aws_iam_instance_profile.ec2_write_only_profile.name
-  
+
 }

@@ -15,6 +15,16 @@ resource "aws_s3_bucket" "test_bucket" {
   }
 }
 
+resource "aws_s3_bucket_server_side_encryption_configuration" "secure" {
+  bucket = aws_s3_bucket.test_bucket.id
+
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm = "AES256"
+    }
+  }
+}
+
 resource "aws_s3_bucket_public_access_block" "test_bucket" {
   bucket = aws_s3_bucket.test_bucket.id
 
@@ -40,8 +50,18 @@ resource "aws_instance" "app" {
 
   metadata_options {
     http_endpoint               = "enabled"
-    http_tokens                 = "required"  # Force IMDSv2
+    http_tokens                 = "required" # Force IMDSv2
     http_put_response_hop_limit = 1
+  }
+
+  root_block_device {
+    encrypted   = true
+    volume_type = "gp3"
+    volume_size = 8
+
+    tags = {
+      Name = "iam-test-instance-root-volume"
+    }
   }
 
   user_data = <<-EOF
@@ -55,6 +75,15 @@ resource "aws_instance" "app" {
   }
 }
 
+resource "aws_eip" "app_eip" {
+  instance = aws_instance.app.id
+  vpc      = true
+
+  tags = {
+    Name = "AppInstanceEIP"
+  }
+}
+
 resource "aws_instance" "app2" {
   ami                    = data.aws_ami.amazon_linux.id
   instance_type          = "t3.micro"
@@ -65,8 +94,18 @@ resource "aws_instance" "app2" {
 
   metadata_options {
     http_endpoint               = "enabled"
-    http_tokens                 = "required"  # Force IMDSv2
+    http_tokens                 = "required" # Force IMDSv2
     http_put_response_hop_limit = 1
+  }
+
+  root_block_device {
+    encrypted   = true
+    volume_type = "gp3"
+    volume_size = 8
+
+    tags = {
+      Name = "iam-test-instance-2-root-volume"
+    }
   }
 
   user_data = <<-EOF
@@ -77,5 +116,14 @@ resource "aws_instance" "app2" {
 
   tags = {
     Name = "iam-test-instance"
+  }
+}
+
+resource "aws_eip" "app_eip2" {
+  instance = aws_instance.app2.id
+  vpc      = true
+
+  tags = {
+    Name = "AppInstanceEIP"
   }
 }
