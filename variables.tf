@@ -13,3 +13,8 @@ variable "bucket_name" {
   description = "Nom du bucket S3 (doit être globalement unique)"
   type        = string
 }
+
+variable "kms_key_id" {
+  description = "KMS key ID for S3 bucket encryption"
+  type        = string
+}

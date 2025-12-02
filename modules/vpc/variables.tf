@@ -17,3 +17,8 @@ variable "my_ip" {
   description = "Your Public IP address (format x.x.x.x/32) for SSH access"
   type        = string
 }
+
+variable "region" {
+  description = "AWS Region"
+  type        = string
+}

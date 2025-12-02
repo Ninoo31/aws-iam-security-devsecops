@@ -18,3 +18,7 @@ variable "instance_profile_name" {
 variable "instance_profile_write_only_name" {
   type = string
 }
+
+variable "kms_key_id" {
+  type = string
+}

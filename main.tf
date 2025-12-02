@@ -32,5 +32,6 @@ module "ec2" {
   security_group_id                = module.vpc.security_group_id
   instance_profile_name            = module.iam.instance_profile_name
   instance_profile_write_only_name = module.iam.instance_profile_write_only_name
+  kms_key_id                       = module.iam.kms_key_id
 }
 

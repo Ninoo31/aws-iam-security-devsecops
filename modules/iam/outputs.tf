@@ -13,3 +13,13 @@ output "instance_profile_write_only_name" {
   value       = aws_iam_instance_profile.ec2_write_only_profile.name
 
 }
+
+output "kms_key_id" {
+  description = "The ID of the KMS key for S3 bucket encryption"
+  value       = aws_kms_key.s3_encryption_key.key_id
+}
+
+output "kms_key_arn" {
+  description = "The ARN of the KMS key for S3 bucket encryption"
+  value       = aws_kms_key.s3_encryption_key.arn
+}

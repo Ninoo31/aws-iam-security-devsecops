@@ -12,6 +12,11 @@ resource "aws_vpc" "main" {
   }
 }
 
+resource "aws_vpc_endpoint" "s3" {
+  vpc_id            = aws_vpc.main.id
+  service_name      = "com.amazonaws.${var.region}.s3"
+}
+
 resource "aws_internet_gateway" "main" {
   vpc_id = aws_vpc.main.id
 
@@ -75,6 +80,15 @@ resource "aws_security_group" "ec2_sg" {
   }
 
   egress {
+    description = "Acess to S3 VPC Endpoint"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    prefix_list_ids = [aws_vpc_endpoint.s3.prefix_list_id]
+  }
+
+  # trivy:ignore:AVD-AWS-0104 - Required for package updates - HTTPS port 443 only
+  egress {
     description = "HTTPS to AWS services"
     from_port   = 443
     to_port     = 443
@@ -82,6 +96,7 @@ resource "aws_security_group" "ec2_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  # trivy:ignore:AVD-AWS-0104 - Required for package updates - UDP port 53 only
   egress {
     description = "DNS queries"
     from_port   = 53
@@ -90,6 +105,7 @@ resource "aws_security_group" "ec2_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  # trivy:ignore:AVD-AWS-0104 - Required for package updates - HTTP port 80 only
   egress {
     description = "HTTP for package updates (yum/apt)"
     from_port   = 80
