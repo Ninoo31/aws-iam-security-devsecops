@@ -118,3 +118,23 @@ resource "aws_security_group" "ec2_sg" {
     Name = "ec2-secure-sg"
   }
 }
+
+# ═══════════════════════════════════════════════════════════════
+# DEFAULT SECURITY GROUP - LOCKED DOWN (Best Practice)
+# ═══════════════════════════════════════════════════════════════
+
+resource "aws_default_security_group" "default" {
+  vpc_id = aws_vpc.main.id
+
+  # ✅ NO ingress rules = block all inbound traffic
+  # ✅ NO egress rules = block all outbound traffic
+  
+  # Force developers to create explicit security groups
+  # instead of relying on permissive defaults
+
+  tags = {
+    Name        = "default-sg-locked-down"
+    Description = "DO NOT USE - Default SG with all traffic blocked"
+    Managed     = "Terraform"
+  }
+}

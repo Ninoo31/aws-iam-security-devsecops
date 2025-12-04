@@ -15,6 +15,19 @@ resource "aws_s3_bucket" "test_bucket" {
   }
 }
 
+resource "aws_sns_topic" "bucket_notifications" {
+  name = "test_bucket-notification"
+}
+
+resource "aws_s3_bucket_notification" "bucket_notification" {
+  bucket = aws_s3_bucket.test_bucket.id
+  topic {
+    topic_arn = aws_sns_topic.bucket_notifications.arn
+    events    = ["s3:ObjectCreated:*"]
+    filter_prefix = "logs/"
+  }
+}
+
 resource "aws_s3_bucket_server_side_encryption_configuration" "secure" {
   bucket = aws_s3_bucket.test_bucket.id
 
@@ -49,6 +62,8 @@ resource "aws_instance" "app" {
   vpc_security_group_ids = [var.security_group_id]
   iam_instance_profile   = var.instance_profile_name
   key_name               = "lab-key" # Ensure you have created this key pair and sent it to your lab environment 
+  monitoring             = true
+  ebs_optimized = true
 
   metadata_options {
     http_endpoint               = "enabled"
@@ -95,6 +110,8 @@ resource "aws_instance" "app2" {
   vpc_security_group_ids = [var.security_group_id]
   iam_instance_profile   = var.instance_profile_write_only_name
   key_name               = "lab-key" # Ensure you have created this key pair and sent it to your lab environment 
+  monitoring             = true
+  ebs_optimized = true
 
   metadata_options {
     http_endpoint               = "enabled"

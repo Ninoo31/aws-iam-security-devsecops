@@ -11,3 +11,4 @@ override.tf.json
 terraform.rc
 terraform.tfvars
 .terraform.tfstate.*
+venv/
