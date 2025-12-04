@@ -84,6 +84,8 @@ resource "aws_eip" "app_eip" {
   tags = {
     Name = "AppInstanceEIP"
   }
+
+  depends_on = [ aws_instance.app ]
 }
 
 resource "aws_instance" "app2" {
@@ -128,4 +130,5 @@ resource "aws_eip" "app_eip2" {
   tags = {
     Name = "AppInstanceEIP"
   }
+  depends_on = [ aws_instance.app ]
 }
