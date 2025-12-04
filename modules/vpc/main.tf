@@ -13,8 +13,8 @@ resource "aws_vpc" "main" {
 }
 
 resource "aws_vpc_endpoint" "s3" {
-  vpc_id            = aws_vpc.main.id
-  service_name      = "com.amazonaws.${var.region}.s3"
+  vpc_id       = aws_vpc.main.id
+  service_name = "com.amazonaws.${var.region}.s3"
 }
 
 resource "aws_internet_gateway" "main" {
@@ -80,10 +80,10 @@ resource "aws_security_group" "ec2_sg" {
   }
 
   egress {
-    description = "Acess to S3 VPC Endpoint"
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
+    description     = "Acess to S3 VPC Endpoint"
+    from_port       = 443
+    to_port         = 443
+    protocol        = "tcp"
     prefix_list_ids = [aws_vpc_endpoint.s3.prefix_list_id]
   }
 

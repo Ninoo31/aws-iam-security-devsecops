@@ -91,3 +91,19 @@ output "quick_reference" {
   
   EOT
 }
+
+# ═══════════════════════════════════════════════════════════════
+# KMS KEY INFO
+# ═══════════════════════════════════════════════════════════════
+output "kms_key_id" {
+  description = "The ID of the KMS key for S3 bucket encryption"
+  value       = module.iam.kms_key_id
+}
+output "kms_key_arn" {
+  description = "The ARN of the KMS key for S3 bucket encryption"
+  value       = module.iam.kms_key_arn
+}
+output "kms_key_alias" {
+  description = "The alias of the KMS key for S3 bucket encryption"
+  value       = module.iam.kms_key_alias
+}

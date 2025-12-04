@@ -23,3 +23,8 @@ output "kms_key_arn" {
   description = "The ARN of the KMS key for S3 bucket encryption"
   value       = aws_kms_key.s3_encryption_key.arn
 }
+
+output "kms_key_alias" {
+  description = "The alias of the KMS key for S3 bucket encryption"
+  value       = aws_kms_alias.s3_encryption_key_alias.name
+}

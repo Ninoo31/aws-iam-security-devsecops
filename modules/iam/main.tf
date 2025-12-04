@@ -21,8 +21,15 @@ resource "aws_iam_role" "ec2_s3_access" {
 # Modify this policy if you want to restrict or expand permissions for the EC2 role
 data "aws_iam_policy_document" "s3_readandwrite" {
   statement {
+    effect    = "Allow"
     actions   = ["s3:GetObject", "s3:ListBucket", "s3:PutObject", "s3:DeleteObject"]
     resources = ["arn:aws:s3:::${var.bucket_name}", "arn:aws:s3:::${var.bucket_name}/*"]
+  }
+
+  statement {
+    effect    = "Allow"
+    actions   = ["kms:Decrypt", "kms:DescribeKey", "kms:GenerateDataKey"]
+    resources = [aws_kms_key.s3_encryption_key.arn]
   }
 }
 
@@ -50,8 +57,14 @@ resource "aws_iam_role" "ec2_s3_access_write_only" {
 # Modify this policy if you want to restrict or expand permissions for the EC2 role
 data "aws_iam_policy_document" "s3_writeonly" {
   statement {
+    effect    = "Allow"
     actions   = ["s3:PutObject"]
     resources = ["arn:aws:s3:::${var.bucket_name}", "arn:aws:s3:::${var.bucket_name}/*"]
+  }
+  statement {
+    effect    = "Allow"
+    actions   = ["kms:Decrypt", "kms:DescribeKey", "kms:GenerateDataKey"]
+    resources = [aws_kms_key.s3_encryption_key.arn]
   }
 }
 

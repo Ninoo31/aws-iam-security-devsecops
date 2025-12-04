@@ -23,6 +23,7 @@ module "vpc" {
   public_subnet_cidr  = "10.0.1.0/24"
   private_subnet_cidr = "10.0.2.0/24"
   my_ip               = var.my_ip
+  region              = var.aws_region
 }
 
 module "ec2" {
