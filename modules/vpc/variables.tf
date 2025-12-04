@@ -22,3 +22,8 @@ variable "region" {
   description = "AWS Region"
   type        = string
 }
+
+variable "vpc_flow_role" {
+  description = "vpc role arn"
+  type        = string
+}

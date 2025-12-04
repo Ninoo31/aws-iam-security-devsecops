@@ -35,5 +35,32 @@ jobs:
             --output sarif \
             --output-file-path console,checkov-results.sarif \
             --skip-path tests/ \
-            --soft-fail # Don't stop the workflow
-            
+            --check CRITICAL,HIGH,MEDIUM
+            --compact
+      
+      - name: Upload Checkov SARIF ,checkov-results.sarif
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: results/checkov-results.sarif
+      
+      - name: Generate summary report
+        if: always()
+        run: |
+          echo "## 🔐 Checkov Security Scan Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Severity Filter: CRITICAL, HIGH, MEDIUM only" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          # Exécute Checkov with severity filters
+          checkov -d . \
+            --framework terraform \
+            --skip-path tests/ \
+            --check CRITICAL,HIGH,MEDIUM \
+            --compact \
+            > checkov_output.txt || true
+          
+          # Extract statistiques
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          grep -A 20 "Passed checks:" checkov_output.txt >> $GITHUB_STEP_SUMMARY || echo "No summary available" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY

@@ -28,3 +28,8 @@ output "kms_key_alias" {
   description = "The alias of the KMS key for S3 bucket encryption"
   value       = aws_kms_alias.s3_encryption_key_alias.name
 }
+
+output "vpc_flow_role_arn" {
+  description = "the arn of the vpc flow role"
+  value       = aws_iam_role.vpc_flow_log_role.arn
+}

@@ -128,7 +128,7 @@ resource "aws_default_security_group" "default" {
 
   # ✅ NO ingress rules = block all inbound traffic
   # ✅ NO egress rules = block all outbound traffic
-  
+
   # Force developers to create explicit security groups
   # instead of relying on permissive defaults
 
@@ -136,5 +136,36 @@ resource "aws_default_security_group" "default" {
     Name        = "default-sg-locked-down"
     Description = "DO NOT USE - Default SG with all traffic blocked"
     Managed     = "Terraform"
+  }
+}
+
+# ═══════════════════════════════════════════════════════════════
+# VPC FLOW LOGS - Network Traffic Monitoring
+# ═══════════════════════════════════════════════════════════════
+
+# CloudWatch Log Group
+resource "aws_cloudwatch_log_group" "vpc_flow_logs" {
+  name              = "/aws/vpc/flowlogs/${aws_vpc.main.id}"
+  retention_in_days = 365 # CKV_AWS_338
+
+  tags = {
+    Name        = "vpc-flow-logs"
+    Environment = "production"
+    ManagedBy   = "Terraform"
+  }
+}
+
+resource "aws_flow_log" "vpc_flow_log" {
+  vpc_id          = aws_vpc.main.id
+  traffic_type    = "ALL"
+  iam_role_arn    = var.vpc_flow_role
+  log_destination = aws_cloudwatch_log_group.vpc_flow_logs.arn
+
+  log_format = "$${version} $${account-id} $${interface-id} $${srcaddr} $${dstaddr} $${srcport} $${dstport} $${protocol} $${packets} $${bytes} $${start} $${end} $${action} $${log-status}"
+
+  tags = {
+    Name        = "vpc-flow-log-all-traffic"
+    Description = "Captures all network traffic for security monitoring"
+    ManagedBy   = "Terraform"
   }
 }

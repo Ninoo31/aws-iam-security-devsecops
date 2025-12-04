@@ -13,8 +13,9 @@ provider "aws" {
 }
 
 module "iam" {
-  source      = "./modules/iam"
-  bucket_name = var.bucket_name
+  source                       = "./modules/iam"
+  bucket_name                  = var.bucket_name
+  aws_cloudwatch_log_group_arn = module.vpc.aws_cloudwatch_log_group_arn
 }
 
 module "vpc" {
@@ -24,6 +25,7 @@ module "vpc" {
   private_subnet_cidr = "10.0.2.0/24"
   my_ip               = var.my_ip
   region              = var.aws_region
+  vpc_flow_role       = module.iam.vpc_flow_role_arn
 }
 
 module "ec2" {

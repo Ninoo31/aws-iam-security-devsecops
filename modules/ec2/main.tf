@@ -21,9 +21,10 @@ resource "aws_sns_topic" "bucket_notifications" {
 
 resource "aws_s3_bucket_notification" "bucket_notification" {
   bucket = aws_s3_bucket.test_bucket.id
+  
   topic {
-    topic_arn = aws_sns_topic.bucket_notifications.arn
-    events    = ["s3:ObjectCreated:*"]
+    topic_arn     = aws_sns_topic.bucket_notifications.arn
+    events        = ["s3:ObjectCreated:*"]
     filter_prefix = "logs/"
   }
 }
@@ -63,7 +64,7 @@ resource "aws_instance" "app" {
   iam_instance_profile   = var.instance_profile_name
   key_name               = "lab-key" # Ensure you have created this key pair and sent it to your lab environment 
   monitoring             = true
-  ebs_optimized = true
+  ebs_optimized          = true
 
   metadata_options {
     http_endpoint               = "enabled"
@@ -100,7 +101,7 @@ resource "aws_eip" "app_eip" {
     Name = "AppInstanceEIP"
   }
 
-  depends_on = [ aws_instance.app ]
+  depends_on = [aws_instance.app]
 }
 
 resource "aws_instance" "app2" {
@@ -111,7 +112,7 @@ resource "aws_instance" "app2" {
   iam_instance_profile   = var.instance_profile_write_only_name
   key_name               = "lab-key" # Ensure you have created this key pair and sent it to your lab environment 
   monitoring             = true
-  ebs_optimized = true
+  ebs_optimized          = true
 
   metadata_options {
     http_endpoint               = "enabled"
@@ -147,5 +148,5 @@ resource "aws_eip" "app_eip2" {
   tags = {
     Name = "AppInstanceEIP"
   }
-  depends_on = [ aws_instance.app ]
+  depends_on = [aws_instance.app]
 }
