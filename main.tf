@@ -36,5 +36,6 @@ module "ec2" {
   instance_profile_name            = module.iam.instance_profile_name
   instance_profile_write_only_name = module.iam.instance_profile_write_only_name
   kms_key_id                       = module.iam.kms_key_id
+  notification_email               = var.notification_email
 }
 

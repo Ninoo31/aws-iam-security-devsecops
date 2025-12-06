@@ -107,3 +107,17 @@ output "kms_key_alias" {
   description = "The alias of the KMS key for S3 bucket encryption"
   value       = module.iam.kms_key_alias
 }
+
+# ═══════════════════════════════════════════════════════════════
+# SNS NOTIFICATIONS
+# ═══════════════════════════════════════════════════════════════
+
+output "s3_notifications_topic_arn" {
+  description = "ARN of the SNS topic for S3 bucket notifications"
+  value       = module.ec2.sns_topic_arn
+}
+
+output "s3_notifications_topic_name" {
+  description = "Name of the SNS topic"
+  value       = module.ec2.sns_topic_name
+}

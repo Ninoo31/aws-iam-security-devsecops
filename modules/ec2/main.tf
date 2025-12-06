@@ -60,6 +60,13 @@ resource "aws_s3_bucket_notification" "bucket_notification" {
   depends_on = [aws_sns_topic_policy.bucket_notifications_policy]
 }
 
+resource "aws_sns_topic_subscription" "bucket_notifications_email" {
+  count     = var.notification_email != "" ? 1 : 0
+  topic_arn = aws_sns_topic.bucket_notifications.arn
+  protocol  = "email"
+  endpoint  = var.notification_email
+}
+
 resource "aws_s3_bucket_server_side_encryption_configuration" "secure" {
   bucket = aws_s3_bucket.test_bucket.id
 

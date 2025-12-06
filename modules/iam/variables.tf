@@ -5,5 +5,5 @@ variable "bucket_name" {
 
 variable "aws_cloudwatch_log_group_arn" {
   description = "The aws cloudwatch log group arn"
-  type = string
+  type        = string
 }

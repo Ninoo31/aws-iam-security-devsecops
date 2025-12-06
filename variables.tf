@@ -1,15 +1,21 @@
 variable "aws_region" {
-  description = "Région AWS"
+  description = "AWS Region"
   type        = string
   default     = "eu-north-1"
 }
 
 variable "my_ip" {
-  description = "Ton IP publique (format: x.x.x.x/32)"
+  description = "Your Pubilic IP (format: x.x.x.x/32)"
   type        = string
 }
 
 variable "bucket_name" {
-  description = "Nom du bucket S3 (doit être globalement unique)"
+  description = "S3 bucket name"
   type        = string
+}
+
+variable "notification_email" {
+  description = "Email subscription for s3 topic notification"
+  type        = string
+  default     = ""
 }

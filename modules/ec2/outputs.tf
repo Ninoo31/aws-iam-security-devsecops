@@ -49,3 +49,17 @@ output "bucket_arn" {
   description = "ARN of the S3 bucket"
   value       = aws_s3_bucket.test_bucket.arn
 }
+
+# ═══════════════════════════════════════════════════════════════
+# SNS TOPIC OUTPUTS
+# ═══════════════════════════════════════════════════════════════
+
+output "sns_topic_arn" {
+  description = "ARN of the SNS topic for S3 notifications"
+  value       = aws_sns_topic.bucket_notifications.arn
+}
+
+output "sns_topic_name" {
+  description = "Name of the SNS topic"
+  value       = aws_sns_topic.bucket_notifications.name
+}

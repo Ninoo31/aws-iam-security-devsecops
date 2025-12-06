@@ -51,7 +51,11 @@ resource "aws_kms_key_policy" "s3_encryption_key_policy" {
         Sid    = "Allow use of the key for EC2 instances"
         Effect = "Allow"
         Principal = {
-          AWS = aws_iam_role.ec2_s3_access.arn
+          AWS = [
+            aws_iam_role.ec2_s3_access.arn,
+            aws_iam_role.s3_readandwrite.arn,
+            aws_iam_role.s3_writeonly.arn
+          ]
         }
         Action = [
           "kms:Decrypt",
