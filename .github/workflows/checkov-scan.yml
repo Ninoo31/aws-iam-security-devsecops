@@ -36,7 +36,7 @@ jobs:
             --output-file-path console,results/checkov-results.sarif \
             --skip-path tests/ \
             --check CRITICAL,HIGH,MEDIUM
-            --compact
+            --hard-fail-on
       
       - name: Upload Checkov SARIF to GitHub
         uses: github/codeql-action/upload-sarif@v3

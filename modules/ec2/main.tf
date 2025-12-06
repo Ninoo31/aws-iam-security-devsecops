@@ -16,17 +16,48 @@ resource "aws_s3_bucket" "test_bucket" {
 }
 
 resource "aws_sns_topic" "bucket_notifications" {
-  name = "test_bucket-notification"
+  name              = "${var.bucket_name}-notifications"
+  kms_master_key_id = var.kms_key_id
+
+  tags = {
+    Name    = aws_sns_topic.bucket_notifications.name
+    Purpose = "S3 bucket event notifications"
+  }
+}
+
+resource "aws_sns_topic_policy" "bucket_notifications_policy" {
+  arn = aws_sns_topic.bucket_notifications.arn
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid    = "AllowS3ToPublish"
+        Effect = "Allow"
+        Principal = {
+          Service = "s3.amazonaws.com"
+        }
+        Action   = "SNS:Publish"
+        Resource = aws_sns_topic.bucket_notifications.arn
+        Condition = {
+          ArnLike = {
+            "aws:SourceArn" = aws_s3_bucket.test_bucket.arn
+          }
+        }
+      }
+    ]
+  })
 }
 
 resource "aws_s3_bucket_notification" "bucket_notification" {
   bucket = aws_s3_bucket.test_bucket.id
-  
+
   topic {
     topic_arn     = aws_sns_topic.bucket_notifications.arn
     events        = ["s3:ObjectCreated:*"]
     filter_prefix = "logs/"
   }
+  depends_on = [aws_sns_topic_policy.bucket_notifications_policy]
 }
 
 resource "aws_s3_bucket_server_side_encryption_configuration" "secure" {
